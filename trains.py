@@ -8,7 +8,7 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 
-import json, math
+import json
 from datetime import datetime, date
 from time import mktime, time
 
