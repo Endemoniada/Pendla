@@ -29,66 +29,74 @@ class color:
 
 ### Konfiguration ###
 
-# API-nyckel: 72e87e92af514d73830ba8cf89b8197d
-key = "72e87e92af514d73830ba8cf89b8197d"
 # ID för stationen du vill åka ifrån
-station = "9507"
+stationId = "9507"
 # Tidsfönster i minuter
-tw = "60"
+timeWindow = "60"
 # Tid i minuter att gå till stationen
-walk = 16
+walkTime = 16
 
 ###
 
-url = "http://api.sl.se/api2/realtimedepartures.json?key="+key+"&siteid="+station+"&timewindow="+tw
-#raw json data into 'instanse'
-jsonData = urlopen(url)
-#parsed json data into 'dict'
-jsonParsed = json.load(jsonData)
+def setStationId(id):
+    stationId = id
 
-# Vi vill bara se pendeltåg
-trains = jsonParsed['ResponseData']['Trains']
-# gör om till sekunder
-walk = walk*60
+def setTimeWindow(tw):
+    timeWindow = tw
 
-# output enligt nedan
-# "X min (tid/realtid) Destination - Meddelande"
+def setWalkTime(t):
+    walkTime = t
 
-# Printa ut lite kolumner
-print color.GREEN+color.BOLD+'%-8s' % "Avgång",
-print '%-11s' % "Tid",
-print "Destination"
-print
+def getTrains(apiKey, stationId, timeWindow, walkTime):
+    url = "http://api.sl.se/api2/realtimedepartures.json?key="+apiKey+"&siteid="+stationId+"&timewindow="+timeWindow
+    #raw json data into 'instanse'
+    jsonData = urlopen(url)
+    #parsed json data into 'dict'
+    jsonParsed = json.load(jsonData)
 
-for i in trains:
-    # Vi åker bara norrut (2)
-    if i['JourneyDirection'] == 2:
+    # Vi vill bara se pendeltåg
+    trains = jsonParsed['ResponseData']['Trains']
+    # gör om till sekunder
+    walkTime = walkTime*60
 
-        currEpochTime = int(time())
-        timeTableEpoch = int(mktime(datetime.strptime(i['TimeTabledDateTime'], "%Y-%m-%dT%H:%M:%S").timetuple()))
-        expectedEpoch = int(mktime(datetime.strptime(i['ExpectedDateTime'], "%Y-%m-%dT%H:%M:%S").timetuple()))
-        timeTablePretty = datetime.strftime(datetime.strptime(i['TimeTabledDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
-        ExpectedPretty = datetime.strftime(datetime.strptime(i['ExpectedDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
+    # output enligt nedan
+    # "X min (tid/realtid) Destination - Meddelande"
 
-        # Om tiden till tåget går är mindre än tiden det tar att gå
-        if (timeTableEpoch-currEpochTime) < walk:
-            continue
+    # Printa ut lite kolumner
+    print color.GREEN+color.BOLD+'%-8s' % "Avgång",
+    print '%-11s' % "Tid",
+    print "Destination"
+    print
 
-        # Visa "DisplayTime"
-        print color.BOLD + color.YELLOW + '%-7s' % i['DisplayTime'].encode('utf-8') + color.END,
+    for i in trains:
+        # Vi åker bara norrut (2)
+        if i['JourneyDirection'] == 2:
 
-        # Om realtid matchar tidtabellen
-        if timeTableEpoch == expectedEpoch:
-            # Visa tabelltid
-            print '%-11s' % timeTablePretty,
-        # ...Annars printa både tabelltid samt ny tid
-        else:
-            # Visa tabelltid
-            print '%-11s' % (timeTablePretty+"/"+color.RED+ExpectedPretty+color.END),
+            currEpochTime = int(time())
+            timeTableEpoch = int(mktime(datetime.strptime(i['TimeTabledDateTime'], "%Y-%m-%dT%H:%M:%S").timetuple()))
+            expectedEpoch = int(mktime(datetime.strptime(i['ExpectedDateTime'], "%Y-%m-%dT%H:%M:%S").timetuple()))
+            timeTablePretty = datetime.strftime(datetime.strptime(i['TimeTabledDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
+            ExpectedPretty = datetime.strftime(datetime.strptime(i['ExpectedDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
 
-        # Visa destination
-        print color.YELLOW+'%-11s' % i['Destination'].encode('utf-8')+color.END
+            # Om tiden till tåget går är mindre än tiden det tar att gå
+            if (timeTableEpoch-currEpochTime) < walkTime:
+                continue
 
-        # Om det finns avvikelser, printa meddelandet
-        if i['Deviations']:
-            print color.DARKCYAN+"- " + i['Deviations'][0]['Text'][:80]+color.END
+            # Visa "DisplayTime"
+            print color.BOLD + color.YELLOW + '%-7s' % i['DisplayTime'].encode('utf-8') + color.END,
+
+            # Om realtid matchar tidtabellen
+            if timeTableEpoch == expectedEpoch:
+                # Visa tabelltid
+                print '%-11s' % timeTablePretty,
+            # ...Annars printa både tabelltid samt ny tid
+            else:
+                # Visa tabelltid
+                print '%-11s' % (timeTablePretty+"/"+color.RED+ExpectedPretty+color.END),
+
+            # Visa destination
+            print color.YELLOW+'%-11s' % i['Destination'].encode('utf-8')+color.END
+
+            # Om det finns avvikelser, printa meddelandet
+            if i['Deviations']:
+                print color.DARKCYAN+"- " + i['Deviations'][0]['Text'][:80]+color.END
