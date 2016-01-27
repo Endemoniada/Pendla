@@ -1,27 +1,25 @@
-Pendel
+Pendla
 ======
 
 En liten applikation som visar kommande avgångar du faktiskt hinner till!
 
+## Instruktioner
+
+Gå till sl.se eller valfri tjänst som nyttjar deras APIer. Gör en sökning på en hållplats och notera ID-numret (syns vanligtvis i URLen). Editera sedan "pendla.py" med korrekt data för respektive trafikslag.
+
 ## Versioner
 
-### 2.0
+#### 1.0-RC1
 
-Pendel stödjer nu även bussar! Välj vilka linjer du vill se i konfigurationen.
+- Pendla kan nu visa när du måste gå för att hinna med en buss eller ett tåg
+- Tar bort tunnelbana pga. bristfälligt API
 
-- Fixar bugg med fel linje-riktning
-- Sänker default tidsfönster för bussar till 30 minuter
+#### 0.2
 
-#### 1.2
+- Lägger till tunnelbana
+- Skapar pendla.py och flyttar pendeltåg, bussar och tunnelbana till separata moduler
+- Snyggar till output med färger och kolumner med rubriker
 
-- Ändrat output till tabell-format
-- Visar avgångar med färg för ökad tydlighet
+#### 0.1
 
-#### 1.1
-
-- Visar realtid om denna inte stämmer med tabelltid
-- Visar meddelanden om dessa finns
-
-#### 1.0
-
-- Visar avgångar inom en valbar tidsperiod, men bara om du hinner till dessa. Ställ in antalet minuter det tar att gå till stationen i konfigurations-delen i skriptet.
+- Första versionen
