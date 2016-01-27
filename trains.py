@@ -57,7 +57,7 @@ def getTrains(apiKey, stationId, timeWindow, walkTime):
     # Vi vill bara se pendeltåg
     trains = jsonParsed['ResponseData']['Trains']
     # gör om till sekunder
-    walkTime = walkTime*60
+    walkTime *= 60
 
     # output enligt nedan
     # "X min (tid/realtid) Destination - Meddelande"
