@@ -8,7 +8,7 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 
-import json
+import json, math
 from datetime import datetime, date
 from time import mktime, time
 
@@ -21,6 +21,7 @@ class color:
    GREEN = '\033[92m'
    YELLOW = '\033[93m'
    RED = '\033[91m'
+   LIGHTRED = '\033[1;31m'
    BOLD = '\033[1m'
    UNDERLINE = '\033[4m'
    END = '\033[0m'
@@ -47,6 +48,26 @@ def setTimeWindow(tw):
 def setWalkTime(t):
     walkTime = t
 
+def getLeaveTime(wt, ct, dt):
+    # wt=walktime, ct=currtime, dt=departuretime
+
+    # 1. räkna ut sekunder till avgång
+    # 2. subtrahera tiden det tar att gå
+    # 3. avrunda uppåt till minuter
+    # 4. om minuter < 0, skicka "Nu!"
+
+    timeLeftS = (dt - ct) - wt
+    # print "timeLeftS="+str(timeLeftS)
+
+    timeLeftM = int(float(timeLeftS) / 60.0)
+    # print "TimeLeftM="+str(timeLeftM)
+
+    if timeLeftM <= 0:
+        return color.BOLD + color.RED + '%-7s' % "Nu!" + color.END
+    if timeLeftM <= 5:
+        return color.BOLD + color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
+    return color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
+
 def getTrains(apiKey, stationId, timeWindow, walkTime):
     url = "http://api.sl.se/api2/realtimedepartures.json?key="+apiKey+"&siteid="+stationId+"&timewindow="+timeWindow
     #raw json data into 'instanse'
@@ -65,10 +86,18 @@ def getTrains(apiKey, stationId, timeWindow, walkTime):
     print color.DARKCYAN+color.BOLD+ "PENDELTÅG"
 
     # Printa ut lite kolumner
-    print color.GREEN+color.BOLD+'%-8s' % "Avgång",
+    print color.GREEN+color.BOLD+'%-8s' % "Gå om",
+    print '%-8s' % "Avgång",
     print '%-11s' % "Tid",
     print "Destination"
     print
+
+    # print "LatestUpdate="+jsonParsed['ResponseData']['LatestUpdate']
+    # print "LatestUpdate(Epoch)="+str(int(mktime(datetime.strptime(jsonParsed['ResponseData']['LatestUpdate'], "%Y-%m-%dT%H:%M:%S").timetuple())))
+    # print "DataAge="+str(jsonParsed['ResponseData']['DataAge'])
+    # print "currEpochTime="+str(int(time()))
+    # print "diff="+str(int(time())-int(mktime(datetime.strptime(jsonParsed['ResponseData']['LatestUpdate'], "%Y-%m-%dT%H:%M:%S").timetuple())))
+    # print
 
     for i in trains:
         # Vi åker bara norrut (2)
@@ -84,8 +113,19 @@ def getTrains(apiKey, stationId, timeWindow, walkTime):
             if (timeTableEpoch-currEpochTime) < walkTime:
                 continue
 
+            # if timeTableEpoch != expectedEpoch:
+            #     minsLeft = int(math.ceil((float(expectedEpoch) - float(currEpochTime)) / 60))
+            # else:
+            #     minsLeft = int(math.ceil((float(timeTableEpoch) - float(currEpochTime)) / 60))
+
+            # print str(math.ceil((float(expectedEpoch) - float(currEpochTime)) / 60)) + " minuter kvar"
+
+            # Visa "Gå om"
+            #print color.BOLD + color.YELLOW + '%-7s' % (str(minsLeft-(walkTime / 60)) + " min") + color.END,
+            print color.END+getLeaveTime(walkTime, currEpochTime, expectedEpoch),
+
             # Visa "DisplayTime"
-            print color.BOLD + color.YELLOW + '%-7s' % i['DisplayTime'].encode('utf-8') + color.END,
+            print color.YELLOW + '%-7s' % i['DisplayTime'].encode('utf-8') + color.END,
 
             # Om realtid matchar tidtabellen
             if timeTableEpoch == expectedEpoch:
