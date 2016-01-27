@@ -121,7 +121,6 @@ def getTrains(apiKey, stationId, timeWindow, walkTime):
             # print str(math.ceil((float(expectedEpoch) - float(currEpochTime)) / 60)) + " minuter kvar"
 
             # Visa "Gå om"
-            #print color.BOLD + color.YELLOW + '%-7s' % (str(minsLeft-(walkTime / 60)) + " min") + color.END,
             print color.END+getLeaveTime(walkTime, currEpochTime, expectedEpoch),
 
             # Visa "DisplayTime"
