@@ -49,6 +49,26 @@ def setTimeWindow(tw):
 def setWalkTime(t):
     walkTime = t
 
+def getLeaveTime(wt, ct, dt):
+    # wt=walktime, ct=currtime, dt=departuretime
+
+    # 1. räkna ut sekunder till avgång
+    # 2. subtrahera tiden det tar att gå
+    # 3. avrunda uppåt till minuter
+    # 4. om minuter < 0, skicka "Nu!"
+
+    timeLeftS = (dt - ct) - wt
+    # print "timeLeftS="+str(timeLeftS)
+
+    timeLeftM = int(float(timeLeftS) / 60.0)
+    # print "TimeLeftM="+str(timeLeftM)
+
+    if timeLeftM <= 0:
+        return color.BOLD + color.RED + '%-7s' % "Nu!" + color.END
+    if timeLeftM <= 5:
+        return color.BOLD + color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
+    return color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
+
 def getBuses(apiKey, stopId, timeWindow, walkTime):
     url = "http://api.sl.se/api2/realtimedepartures.json?key="+apiKey+"&siteid="+stopId+"&timewindow="+timeWindow
     #raw json data into 'instanse'
@@ -67,7 +87,8 @@ def getBuses(apiKey, stopId, timeWindow, walkTime):
     print color.DARKCYAN+color.BOLD+ "BUSSAR"
 
     # Printa ut lite kolumner
-    print color.GREEN+color.BOLD+'%-8s' % "Avgång",
+    print color.GREEN+color.BOLD+'%-8s' % "Gå om",
+    print '%-8s' % "Avgång",
     print '%-11s' % "Tid",
     print "Linje",
     print "Destination"
@@ -87,8 +108,11 @@ def getBuses(apiKey, stopId, timeWindow, walkTime):
             if (timeTableEpoch-currEpochTime) < walkTime:
                 continue
 
+            # Visa "Gå om"
+            print color.END+getLeaveTime(walkTime, currEpochTime, expectedEpoch),
+
             # Visa "DisplayTime"
-            print color.BOLD + color.YELLOW + '%-7s' % i['DisplayTime'].encode('utf-8') + color.END,
+            print color.YELLOW + '%-7s' % i['DisplayTime'].encode('utf-8') + color.END,
 
             # Om realtid matchar tidtabellen
             if timeTableEpoch == expectedEpoch:
