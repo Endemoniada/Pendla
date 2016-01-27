@@ -62,6 +62,8 @@ def getTrains(apiKey, stationId, timeWindow, walkTime):
     # output enligt nedan
     # "X min (tid/realtid) Destination - Meddelande"
 
+    print color.DARKCYAN+color.BOLD+ "PENDELTÅG"
+
     # Printa ut lite kolumner
     print color.GREEN+color.BOLD+'%-8s' % "Avgång",
     print '%-11s' % "Tid",
@@ -100,3 +102,5 @@ def getTrains(apiKey, stationId, timeWindow, walkTime):
             # Om det finns avvikelser, printa meddelandet
             if i['Deviations']:
                 print color.DARKCYAN+"- " + i['Deviations'][0]['Text'][:80]+color.END
+
+    print
