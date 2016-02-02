@@ -47,7 +47,8 @@ class Station(object):
             else:
                 # Visa tabelltid
                 print '%-11s' % (timeTablePretty+"/"+color.RED+ExpectedPretty+color.END),
-            print color.YELLOW + '%-11s' % d['Destination'] + color.END
+            # print color.DARKCYAN+'%-3s' % d['LineNumber'],
+            print '%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END
             if d['Deviations']:
                 print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
             i += 1
@@ -144,13 +145,11 @@ def main():
     stations['3748'].lines = {514: 1, 627: 2}
     stations['3748'].traffic_type = "Buses"
 
-    stations['9507'].api_data = get_api_json_data(api_key, stations['9507'].station_id)
-    stations['3748'].api_data = get_api_json_data(api_key, stations['3748'].station_id)
-
     print_header()
     # stations['9507'].print_departures()
-    for s in stations.itervalues():
-        s.print_departures()
+    for s, o in stations.iteritems():
+        o.api_data = get_api_json_data(api_key, o.station_id)
+        o.print_departures()
 
 if __name__ == '__main__':
     main()
