@@ -148,13 +148,6 @@ def read_config(config_file):
     except IOError:
         print "No configuration file found!"
         raise
-    #     print "Creating sample file 'config.yml'. Please edit and save this file before running the program again."
-    #     # Skapar en dict med exempel-konfiguration, och skriver denna till en fil
-    #     cfg = {}
-    #     cfg['pendel'] = {'stationer': [{12345: {'tid': 15, 'linjer': [{123: {'riktning': 1}}, 456]}}]}
-    #     cfg['buss'] = {'stationer': [{67890: {'tid': 5, 'linjer': [{12: {'riktning': 2}}]}}]}
-    #     with file("config.yml", "w") as stream:
-    #         yaml.dump(cfg, stream)
 
 def main():
     API_KEY = "72e87e92af514d73830ba8cf89b8197d"
@@ -169,25 +162,6 @@ def main():
         stations[k].distance = v['distance']
         stations[k].lines = v['lines']
         stations[k].traffic_type = v['traffic_type']
-
-    # # Create a dictionary with each station ID as key,
-    # # and the Station object as value
-    # stations = {"9507": Station(),
-    #             "3748": Station()}
-    #
-    # # Set up some values for testing during development
-    # # These should be removed and replaced by proper config
-    # stations['9507'].station_id = "9507"
-    # stations['9507'].station_name = "Helenelunds Station"
-    # stations['9507'].distance = 16
-    # stations['9507'].lines = {36: 2}
-    # stations['9507'].traffic_type = "Trains"
-    #
-    # stations['3748'].station_id = "3748"
-    # stations['3748'].station_name = "Kista Alléväg"
-    # stations['3748'].distance = 5
-    # stations['3748'].lines = {514: 1, 627: 2}
-    # stations['3748'].traffic_type = "Buses"
 
     print_header()
 
