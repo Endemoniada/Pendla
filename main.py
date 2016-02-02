@@ -10,6 +10,12 @@ import json
 from datetime import datetime, date
 from time import mktime, time
 
+try:
+    import yaml
+except ImportError:
+    print "Requires PyYAML module to function"
+    exit()
+
 
 class Station(object):
     """docstring for Station
@@ -133,9 +139,26 @@ def remaining_time(distance, departure):
     """
     now = int(time())
 
+def read_config():
+    try:
+        with open(CONFIG_FILE, 'r') as stream:
+            # läser config.yml och skapar en dict 'cfg' med alla värden
+            config_data = yaml.load(stream)
+            return config_data
+    except IOError:
+        print "No configuration file found!"
+        raise
+    #     print "Creating sample file 'config.yml'. Please edit and save this file before running the program again."
+    #     # Skapar en dict med exempel-konfiguration, och skriver denna till en fil
+    #     cfg = {}
+    #     cfg['pendel'] = {'stationer': [{12345: {'tid': 15, 'linjer': [{123: {'riktning': 1}}, 456]}}]}
+    #     cfg['buss'] = {'stationer': [{67890: {'tid': 5, 'linjer': [{12: {'riktning': 2}}]}}]}
+    #     with file("config.yml", "w") as stream:
+    #         yaml.dump(cfg, stream)
 
 def main():
-    api_key = "72e87e92af514d73830ba8cf89b8197d"
+    API_KEY = "72e87e92af514d73830ba8cf89b8197d"
+    CONFIG_FILE = "config.yml"
 
     # Create a dictionary with each station ID as key,
     # and the Station object as value
@@ -162,7 +185,7 @@ def main():
     # (1) fetch data from API
     # (2) print relevant departures
     for s, o in stations.iteritems():
-        o.api_data = get_api_json_data(api_key, o.station_id)
+        o.api_data = get_api_json_data(API_KEY, o.station_id)
         o.print_departures()
 
 if __name__ == '__main__':
