@@ -79,6 +79,8 @@ class color:
     END = '\033[0m'
 
 
+# Old function for calculating the "Gå om" message.
+# Either pretty this up or replace with remaining_time()
 def getLeaveTime(wt, ct, dt):
     # wt=walktime, ct=currtime, dt=departuretime
 
@@ -99,6 +101,8 @@ def getLeaveTime(wt, ct, dt):
         return color.BOLD + color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
     return color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
 
+# Fetch the data from Trafiklab API and check for
+# common errors.
 def get_api_json_data(api_key, station_id):
     url = "http://api.sl.se/api2/realtimedepartures.json?key=" + \
             api_key + "&siteid=" + station_id + "&timewindow=60"
@@ -119,6 +123,9 @@ def print_header():
         print "Destination",
         print color.END
 
+# WIP
+# To be finished properly later. This is currently
+# calculated inside the Station class
 def remaining_time(distance, departure):
     """Take walking time (in minutes) and departure time (as string)
     and return a string with minutes remaining or "now!" if minutes
@@ -130,9 +137,13 @@ def remaining_time(distance, departure):
 def main():
     api_key = "72e87e92af514d73830ba8cf89b8197d"
 
+    # Create a dictionary with each station ID as key,
+    # and the Station object as value
     stations = {"9507": Station(),
                 "3748": Station()}
 
+    # Set up some values for testing during development
+    # These should be removed and replaced by proper config
     stations['9507'].station_id = "9507"
     stations['9507'].station_name = "Helenelunds Station"
     stations['9507'].distance = 16
@@ -146,7 +157,10 @@ def main():
     stations['3748'].traffic_type = "Buses"
 
     print_header()
-    # stations['9507'].print_departures()
+
+    # Loop through all stations and:
+    # (1) fetch data from API
+    # (2) print relevant departures
     for s, o in stations.iteritems():
         o.api_data = get_api_json_data(api_key, o.station_id)
         o.print_departures()
