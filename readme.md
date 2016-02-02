@@ -23,3 +23,17 @@ Gå till sl.se eller valfri tjänst som nyttjar deras APIer. Gör en sökning p�
 #### 0.1
 
 - Första versionen
+
+## Utveckling
+
+För att köra tester behöver pip-paket installeras:
+
+```
+pip install -r requirements-test.txt
+```
+
+[PEP8](https://www.python.org/dev/peps/pep-0008/) syntax test:
+
+```
+make syntax-test
+```
