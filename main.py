@@ -138,25 +138,24 @@ def remaining_time(distance, departure):
 def main():
     api_key = "72e87e92af514d73830ba8cf89b8197d"
 
-    helenelund = Station()
-    helenelund.station_id = "9507"
-    helenelund.station_name = "Helenelunds Station"
-    helenelund.distance = 16
-    helenelund.lines = {36: 2}
-    helenelund.traffic_type = "Trains"
+    stations = {"9507": Station(),
+                "3748": Station()}
 
-    kista = Station()
-    kista.station_id = "3748"
-    kista.station_name = "Kista Alléväg"
-    kista.distance = 5
-    kista.lines = {514: 1, 627: 2}
+    stations['9507'].station_id = "9507"
+    stations['9507'].station_name = "Helenelunds Station"
+    stations['9507'].distance = 16
+    stations['9507'].lines = {36: 2}
+    stations['9507'].traffic_type = "Trains"
 
-    helenelund.api_data = get_api_json_data(api_key, helenelund.station_id)
+    stations['3748'].station_id = "3748"
+    stations['3748'].station_name = "Kista Alléväg"
+    stations['3748'].distance = 5
+    stations['3748'].lines = {514: 1, 627: 2}
 
-    print_header(helenelund.traffic_type)
-    helenelund.print_departures()
+    stations['9507'].api_data = get_api_json_data(api_key, stations['9507'].station_id)
 
-    print_header("bus")
+    print_header(stations['9507'].traffic_type)
+    stations['9507'].print_departures()
 
 if __name__ == '__main__':
     main()
