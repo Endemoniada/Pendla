@@ -1,0 +1,28 @@
+pendel:
+  #Helenelunds Station
+  9507:
+    tid: 16
+    linjer:
+      - 36:
+          #norrut
+          riktning: 2
+buss:
+  #Kista Centrum
+  50579:
+    tid: 10
+    linjer:
+      - 523:
+          riktning: 2
+      - 179:
+          #Sollentuna Centrum
+          riktning: 1
+  #Kista Alléväg
+  3748:
+    tid: 5
+    linjer:
+      - 627:
+          #Åkerby Industriområde
+          riktning: 2
+      - 514:
+          #Häggvik
+          riktning: 1
