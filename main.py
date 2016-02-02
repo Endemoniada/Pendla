@@ -111,7 +111,7 @@ def getLeaveTime(wt, ct, dt):
 # common errors.
 def get_api_json_data(api_key, station_id):
     url = "http://api.sl.se/api2/realtimedepartures.json?key=" + \
-            api_key + "&siteid=" + station_id + "&timewindow=60"
+            str(api_key) + "&siteid=" + str(station_id) + "&timewindow=60"
     stream = urlopen(url)
     data = json.load(stream)
     if data['StatusCode'] != 0:
@@ -139,9 +139,9 @@ def remaining_time(distance, departure):
     """
     now = int(time())
 
-def read_config():
+def read_config(config_file):
     try:
-        with open(CONFIG_FILE, 'r') as stream:
+        with open(config_file, 'r') as stream:
             # läser config.yml och skapar en dict 'cfg' med alla värden
             config_data = yaml.load(stream)
             return config_data
@@ -160,24 +160,34 @@ def main():
     API_KEY = "72e87e92af514d73830ba8cf89b8197d"
     CONFIG_FILE = "config.yml"
 
-    # Create a dictionary with each station ID as key,
-    # and the Station object as value
-    stations = {"9507": Station(),
-                "3748": Station()}
+    stations = {}
 
-    # Set up some values for testing during development
-    # These should be removed and replaced by proper config
-    stations['9507'].station_id = "9507"
-    stations['9507'].station_name = "Helenelunds Station"
-    stations['9507'].distance = 16
-    stations['9507'].lines = {36: 2}
-    stations['9507'].traffic_type = "Trains"
+    for k, v in read_config(CONFIG_FILE).iteritems():
+        stations[k] = Station()
+        stations[k].station_id = v['station_id']
+        stations[k].station_name = v['station_name']
+        stations[k].distance = v['distance']
+        stations[k].lines = v['lines']
+        stations[k].traffic_type = v['traffic_type']
 
-    stations['3748'].station_id = "3748"
-    stations['3748'].station_name = "Kista Alléväg"
-    stations['3748'].distance = 5
-    stations['3748'].lines = {514: 1, 627: 2}
-    stations['3748'].traffic_type = "Buses"
+    # # Create a dictionary with each station ID as key,
+    # # and the Station object as value
+    # stations = {"9507": Station(),
+    #             "3748": Station()}
+    #
+    # # Set up some values for testing during development
+    # # These should be removed and replaced by proper config
+    # stations['9507'].station_id = "9507"
+    # stations['9507'].station_name = "Helenelunds Station"
+    # stations['9507'].distance = 16
+    # stations['9507'].lines = {36: 2}
+    # stations['9507'].traffic_type = "Trains"
+    #
+    # stations['3748'].station_id = "3748"
+    # stations['3748'].station_name = "Kista Alléväg"
+    # stations['3748'].distance = 5
+    # stations['3748'].lines = {514: 1, 627: 2}
+    # stations['3748'].traffic_type = "Buses"
 
     print_header()
 
