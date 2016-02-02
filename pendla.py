@@ -21,16 +21,21 @@ except IOError:
     print "Creating sample file 'config.yml'. Please edit and save this file before running the program again."
     # Skapar en dict med exempel-konfiguration, och skriver denna till en fil
     cfg = {}
-    cfg['pendel'] = {'stationer': [{12345: {'linjer': [{123: {'riktning': 2}}, 456]}}]}
-    cfg['buss'] = {'stationer': [{67890: {'linjer': [{36: {'riktning': 2}}]}}]}
+    cfg['pendel'] = {'stationer': [{12345: {'tid': 15, 'linjer': [{123: {'riktning': 1}}, 456]}}]}
+    cfg['buss'] = {'stationer': [{67890: {'tid': 5, 'linjer': [{12: {'riktning': 2}}]}}]}
     with file("config.yml", "w") as stream:
         yaml.dump(cfg, stream)
 
-# for section in cfg:
-#     print(section)
-#     print(cfg[section])
-
 key = "72e87e92af514d73830ba8cf89b8197d"
+timeWindow = "60"
+
+# Iterera alla stationer i "pendel":
+for station in cfg['pendel']['stationer']:
+    trains.getTrains(key, station, timeWindow)
+
+
+
+
 
 # Ändra dessa värden till de stations- och hållplatsID du vill se, samt önskat tidsfönster och tiden det tar dig att gå dit.
 # (key, "<ID för hållplats/station>", "<tidsfönster>", <gångavstånd i minuter>)
