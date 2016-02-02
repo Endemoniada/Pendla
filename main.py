@@ -21,6 +21,7 @@ class Station(object):
 
 
     def print_departures(self):
+        print color.DARKCYAN + color.BOLD + self.station_name + color.END
         i = 0
         for d in self.api_data['ResponseData'][self.traffic_type]:
             currEpochTime = int(time())
@@ -29,7 +30,7 @@ class Station(object):
             timeTablePretty = datetime.strftime(datetime.strptime(d['TimeTabledDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
             ExpectedPretty = datetime.strftime(datetime.strptime(d['ExpectedDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
 
-            if i >= 2:
+            if i >= 3:
                 break
 
             if (timeTableEpoch-currEpochTime) < self.distance * 60:
@@ -108,19 +109,8 @@ def get_api_json_data(api_key, station_id):
         exit()
     return data
 
-def print_header(traffic_type):
-    if traffic_type is "Buses":
-        print color.DARKCYAN+color.BOLD + "BUSSAR" + color.END
-        # Printa ut lite kolumner
-        print color.GREEN+color.BOLD+'%-8s' % "Gå om",
-        print '%-8s' % "Avgång",
-        print '%-11s' % "Tid",
-        print "Linje",
-        print "Destination"
-        print color.END
-    elif traffic_type is "Trains":
-        print color.DARKCYAN+color.BOLD + "PENDELTÅG" + color.END
-        # Printa ut lite kolumner
+def print_header():
+        """Print a pretty header before outputing stations and departures"""
         print color.GREEN+color.BOLD+'%-8s' % "Gå om",
         print '%-8s' % "Avgång",
         print '%-11s' % "Tid",
@@ -151,11 +141,15 @@ def main():
     stations['3748'].station_name = "Kista Alléväg"
     stations['3748'].distance = 5
     stations['3748'].lines = {514: 1, 627: 2}
+    stations['3748'].traffic_type = "Buses"
 
     stations['9507'].api_data = get_api_json_data(api_key, stations['9507'].station_id)
+    stations['3748'].api_data = get_api_json_data(api_key, stations['3748'].station_id)
 
-    print_header(stations['9507'].traffic_type)
-    stations['9507'].print_departures()
+    print_header()
+    # stations['9507'].print_departures()
+    for s in stations.itervalues():
+        s.print_departures()
 
 if __name__ == '__main__':
     main()
