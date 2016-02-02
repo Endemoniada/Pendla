@@ -21,6 +21,7 @@ class Station(object):
 
 
     def print_departures(self):
+        print
         print color.DARKCYAN + color.BOLD + self.station_name + color.END
         i = 0
         for d in self.api_data['ResponseData'][self.traffic_type]:
@@ -114,7 +115,7 @@ def print_header():
         print color.GREEN+color.BOLD+'%-8s' % "Gå om",
         print '%-8s' % "Avgång",
         print '%-11s' % "Tid",
-        print "Destination"
+        print "Destination",
         print color.END
 
 def remaining_time(distance, departure):
