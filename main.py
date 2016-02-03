@@ -43,6 +43,10 @@ class Station(object):
         i = 0
 
         for d in self.api_data['ResponseData'][self.traffic_type]:
+            if int(d['LineNumber']) in self.lines and self.lines[int(d['LineNumber'])] == d['Destination']:
+                pass
+            else:
+                continue
             now = int(time())
             tt_unix = self.get_unix_time(d['TimeTabledDateTime'])
             ex_unix = self.get_unix_time(d['ExpectedDateTime'])
