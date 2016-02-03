@@ -9,6 +9,16 @@ Gå till sl.se eller valfri tjänst som nyttjar deras APIer. Gör en sökning p�
 
 ## Versioner
 
+#### 1.0-RC3
+
+Denna version gör en nästan total omskrivning av koden för detta projekt.
+
+- Pendla läser ifrån en konfigurations-fil och filtrerar resultaten därefter
+
+#### 1.0-RC2
+
+- Det hände säkert något här... Men jag har glömt vad :)
+
 #### 1.0-RC1
 
 - Pendla kan nu visa när du måste gå för att hinna med en buss eller ett tåg
