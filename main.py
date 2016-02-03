@@ -3,7 +3,6 @@
 # TO-DO
 #
 # - Fixa JourneyDirection matchning
-# - Ändra rader per station till 2
 # - Ändra JourneyDirection till ändhållplats
 
 try:
@@ -50,7 +49,7 @@ class Station(object):
             tt_string = self.get_string_time(d['TimeTabledDateTime'])
             ex_string = self.get_string_time(d['ExpectedDateTime'])
 
-            if i >= 3:
+            if i > 1:
                 break
 
             if (tt_unix - now) < self.distance * 60:
