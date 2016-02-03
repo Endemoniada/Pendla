@@ -44,7 +44,8 @@ class Station(object):
                 continue
 
             # print color.YELLOW + '%-7s' % "X min" + color.END,
-            print color.END + getLeaveTime(self.distance * 60, currEpochTime, expectedEpoch),
+            # print color.END + getLeaveTime(self.distance * 60, currEpochTime, expectedEpoch),
+            print color.END + remaining_time(self.distance, expectedEpoch),
             print color.YELLOW + '%-7s' % d['DisplayTime'] + color.END,
             if timeTableEpoch == expectedEpoch:
                 # Visa tabelltid
@@ -85,28 +86,6 @@ class color:
     END = '\033[0m'
 
 
-# Old function for calculating the "Gå om" message.
-# Either pretty this up or replace with remaining_time()
-def getLeaveTime(wt, ct, dt):
-    # wt=walktime, ct=currtime, dt=departuretime
-
-    # 1. räkna ut sekunder till avgång
-    # 2. subtrahera tiden det tar att gå
-    # 3. avrunda uppåt till minuter
-    # 4. om minuter < 0, skicka "Nu!"
-
-    timeLeftS = (dt - ct) - wt
-    # print "timeLeftS="+str(timeLeftS)
-
-    timeLeftM = int(float(timeLeftS) / 60.0)
-    # print "TimeLeftM="+str(timeLeftM)
-
-    if timeLeftM <= 0:
-        return color.BOLD + color.RED + '%-7s' % "Nu!" + color.END
-    if timeLeftM <= 5:
-        return color.BOLD + color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
-    return color.YELLOW + '%-7s' % (str(timeLeftM)+" min") + color.END
-
 # Fetch the data from Trafiklab API and check for
 # common errors.
 def get_api_json_data(api_key, station_id):
@@ -138,6 +117,16 @@ def remaining_time(distance, departure):
     equal 0.
     """
     now = int(time())
+
+    remaining_seconds = (departure - now) - (distance * 60)
+    remaining_minutes = int(float(remaining_seconds) / 60.0)
+
+    if remaining_minutes <= 0:
+        return color.BOLD + color.RED + '%-7s' % "Nu!" + color.END
+    elif remaining_minutes <= 5:
+        return color.BOLD + color.YELLOW + '%-7s' % (str(remaining_minutes)+" min") + color.END
+    else:
+        return color.YELLOW + '%-7s' % (str(remaining_minutes)+" min") + color.END
 
 def read_config(config_file):
     try:
