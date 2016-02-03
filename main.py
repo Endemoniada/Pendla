@@ -25,39 +25,41 @@ class Station(object):
     takes to walk to it.
     """
 
+    def get_unix_time(self, string):
+        return int(mktime(datetime.strptime(string, "%Y-%m-%dT%H:%M:%S").timetuple()))
+
+    def get_string_time(self, unix):
+        return datetime.strftime(datetime.strptime(unix, "%Y-%m-%dT%H:%M:%S"), "%H:%M")
 
     def print_departures(self):
         print
         print color.DARKCYAN + color.BOLD + self.station_name + color.END
+
         i = 0
+        
         for d in self.api_data['ResponseData'][self.traffic_type]:
-            currEpochTime = int(time())
-            timeTableEpoch = int(mktime(datetime.strptime(d['TimeTabledDateTime'], "%Y-%m-%dT%H:%M:%S").timetuple()))
-            expectedEpoch = int(mktime(datetime.strptime(d['ExpectedDateTime'], "%Y-%m-%dT%H:%M:%S").timetuple()))
-            timeTablePretty = datetime.strftime(datetime.strptime(d['TimeTabledDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
-            ExpectedPretty = datetime.strftime(datetime.strptime(d['ExpectedDateTime'], "%Y-%m-%dT%H:%M:%S"), "%H:%M")
+            now = int(time())
+            tt_unix = self.get_unix_time(d['TimeTabledDateTime'])
+            ex_unix = self.get_unix_time(d['ExpectedDateTime'])
+            tt_string = self.get_string_time(d['TimeTabledDateTime'])
+            ex_string = self.get_string_time(d['ExpectedDateTime'])
 
             if i >= 3:
                 break
 
-            if (timeTableEpoch-currEpochTime) < self.distance * 60:
+            if (tt_unix - now) < self.distance * 60:
                 continue
 
-            # print color.YELLOW + '%-7s' % "X min" + color.END,
-            # print color.END + getLeaveTime(self.distance * 60, currEpochTime, expectedEpoch),
-            print color.END + remaining_time(self.distance, expectedEpoch),
+            print color.END + remaining_time(self.distance, ex_unix),
             print color.YELLOW + '%-7s' % d['DisplayTime'] + color.END,
-            if timeTableEpoch == expectedEpoch:
-                # Visa tabelltid
-                print '%-11s' % timeTablePretty,
-            # ...Annars printa både tabelltid samt ny tid
+            if tt_unix == ex_unix:
+                print '%-11s' % tt_string,
             else:
-                # Visa tabelltid
-                print '%-11s' % (timeTablePretty+"/"+color.RED+ExpectedPretty+color.END),
-            # print color.DARKCYAN+'%-3s' % d['LineNumber'],
+                print '%-11s' % (tt_string+"/"+color.RED+ex_string+color.END),
             print '%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END
             if d['Deviations']:
                 print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
+
             i += 1
 
     def __init__(self):
@@ -108,9 +110,6 @@ def print_header():
         print "Destination",
         print color.END
 
-# WIP
-# To be finished properly later. This is currently
-# calculated inside the Station class
 def remaining_time(distance, departure):
     """Take walking time (in minutes) and departure time (as string)
     and return a string with minutes remaining or "now!" if minutes
