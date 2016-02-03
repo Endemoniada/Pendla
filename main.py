@@ -1,5 +1,11 @@
 # coding=utf-8
 
+# TO-DO
+#
+# - Fixa JourneyDirection matchning
+# - Ändra rader per station till 2
+# - Ändra JourneyDirection till ändhållplats
+
 try:
     # For Python 3.0 and later
     from urllib.request import urlopen
@@ -36,7 +42,7 @@ class Station(object):
         print color.DARKCYAN + color.BOLD + self.station_name + color.END
 
         i = 0
-        
+
         for d in self.api_data['ResponseData'][self.traffic_type]:
             now = int(time())
             tt_unix = self.get_unix_time(d['TimeTabledDateTime'])
