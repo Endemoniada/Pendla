@@ -1,0 +1,17 @@
+1234:
+    station_id: 1234
+    station_name: "Centralstationen"
+    distance: 16
+    lines:
+        12: "Norrtälje"
+        34: "Södertälje"
+    traffic_type: "Trains"
+
+5678:
+    station_id: 5678
+    station_name: "Vasagatan"
+    distance: 5
+    lines:
+        123: "Sveavägen"
+        456: "Odenplan"
+    traffic_type: "Buses"
