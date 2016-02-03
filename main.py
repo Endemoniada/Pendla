@@ -13,7 +13,7 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 import json
-from datetime import datetime, date
+from datetime import datetime
 from time import mktime, time
 
 try:
@@ -108,6 +108,7 @@ def get_api_json_data(api_key, station_id):
         exit()
     return data
 
+
 def print_header():
         """Print a pretty header before outputing stations and departures"""
         print color.GREEN+color.BOLD+'%-8s' % "Gå om",
@@ -115,6 +116,7 @@ def print_header():
         print '%-11s' % "Tid",
         print "Destination",
         print color.END
+
 
 def remaining_time(distance, departure):
     """Take walking time (in minutes) and departure time (as string)
@@ -133,6 +135,7 @@ def remaining_time(distance, departure):
     else:
         return color.YELLOW + '%-7s' % (str(remaining_minutes)+" min") + color.END
 
+
 def read_config(config_file):
     try:
         with open(config_file, 'r') as stream:
@@ -142,6 +145,7 @@ def read_config(config_file):
     except IOError:
         print "No configuration file found!"
         raise
+
 
 def main():
     API_KEY = "72e87e92af514d73830ba8cf89b8197d"
