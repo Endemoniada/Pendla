@@ -5,9 +5,23 @@ En liten applikation som visar kommande avgångar du faktiskt hinner till!
 
 ## Instruktioner
 
-Gå till sl.se eller valfri tjänst som nyttjar deras APIer. Gör en sökning på en hållplats och notera ID-numret (syns vanligtvis i URLen). Editera sedan "pendla.py" med korrekt data för respektive trafikslag.
+Kör 'python findstation.py' för att hitta din station, och kopiera ID-numret.
+Skapa din egen konfigurations-fil från config.yml.sample och skriv in
+dina stationer och önskade linjer där. Kör sedan 'python main.py' för att
+uppdatera sökningen automatiskt varje minut. Tryck Ctrl+C för att avbryta
+programmet.
 
 ## Versioner
+
+### 1.0
+
+Full release av Pendla. Se instruktionerna för hur du skapar din konfiguration.
+
+- Loopar automatiskt sökningen varje minut så att du alltid har den
+  senaste informationen.
+- Ny, finare konfigurations-fil som är enklare att läsa.
+- Nytt verktyg för att hitta stationer och hämta ut deras SiteId.
+- Fullt kompatibel med pep-0008
 
 #### 1.0-RC3
 
