@@ -2,8 +2,7 @@
 
 # TO-DO
 #
-# - Fixa JourneyDirection matchning
-# - Ändra JourneyDirection till ändhållplats
+# - Ändra så funktioner läser SiteId ifrån key istället för sub-key:value
 
 try:
     # For Python 3.0 and later
