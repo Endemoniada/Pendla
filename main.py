@@ -1,8 +1,5 @@
+#!/usr/bin/python
 # coding=utf-8
-
-# TO-DO
-#
-# - Ändra så funktioner läser SiteId ifrån key istället för sub-key:value
 
 try:
     # For Python 3.0 and later
