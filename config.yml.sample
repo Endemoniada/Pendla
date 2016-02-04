@@ -1,17 +1,21 @@
-1234:
-    station_id: 1234
-    station_name: "Centralstationen"
-    distance: 16
-    lines:
-        12: "Norrtälje"
-        34: "Södertälje"
-    traffic_type: "Trains"
+# EXEMPEL PÅ KONFIGURATION
+#
+# Börja varje sektion med ID-numret för stationen. Kör 'python findstation.py'
+# för att hitta en stations ID-nummer.
+#
+# Fyll sedan på sektionen med namn på stationen, hur lång tid det tar att gå
+# dit, vilka linjer du vill se och vilken riktning dessa åker, samt vilken
+# trafiktyp denna sektion ska ha.
 
-5678:
-    station_id: 5678
-    station_name: "Vasagatan"
-    distance: 5
+1234:                                   # Site-ID i siffror
+    site_name: "Centralstationen"       # Namn inom ""
+    distance: 16                        # gångavstånd i minuter
     lines:
-        123: "Sveavägen"
-        456: "Odenplan"
-    traffic_type: "Buses"
+        12: "Norrtälje"                 # linje: "Ändhållplats"
+        34: "Södertälje"
+    traffic_type: "Trains"              # Tillåtna värden är:
+                                        #   "Metros"
+                                        #   "Buses"
+                                        #   "Trains"
+                                        #   "Trams"
+                                        #   "Ships"
