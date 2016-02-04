@@ -157,7 +157,7 @@ def main():
 
     for k, v in read_config(CONFIG_FILE).iteritems():
         stations[k] = Station()
-        stations[k].station_id = v['station_id']
+        # stations[k].station_id = v['station_id']
         stations[k].station_name = v['station_name']
         stations[k].distance = v['distance']
         stations[k].lines = v['lines']
@@ -169,7 +169,7 @@ def main():
     # (1) fetch data from API
     # (2) print relevant departures
     for s, o in stations.iteritems():
-        o.api_data = get_api_json_data(API_KEY, o.station_id)
+        o.api_data = get_api_json_data(API_KEY, s)
         o.print_departures()
 
 if __name__ == '__main__':
