@@ -162,10 +162,9 @@ def main():
         stations[k].lines = v['lines']
         stations[k].traffic_type = v['traffic_type']
 
-    print_header()
-
     while True:
         os.system('clear')
+        print_header()
         # Loop through all stations and:
         # (1) fetch data from API
         # (2) print relevant departures
