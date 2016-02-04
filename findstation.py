@@ -15,10 +15,36 @@ except ImportError:
 import json
 
 
+class color:
+    """Establish bash terminal color codes using common names"""
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    DARKCYAN = '\033[36m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    LIGHTRED = '\033[1;31m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+
 def get_search_string():
     string = raw_input("Sök efter hållplats: ")
     print
     return string
+
+
+def print_search_results(results):
+    """Print a pretty header before outputing search results"""
+    print color.GREEN+color.BOLD+'%-4s' % "ID",
+    print "Namn",
+    print color.END
+
+    for r in results:
+        print color.DARKCYAN + r['SiteId'] + color.YELLOW + " " + r['Name'],
+        print color.END
 
 
 def main():
@@ -42,9 +68,7 @@ def main():
             data['StatusCode'], data['Message']
         )
     else:
-        print "Resultat:"
-        for r in data['ResponseData']:
-            print r['SiteId'] + " " + r['Name']
+        print_search_results(data['ResponseData'])
 
 if __name__ == '__main__':
     main()
