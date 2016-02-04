@@ -2,8 +2,7 @@
 
 # TO-DO
 #
-# - Fixa JourneyDirection matchning
-# - Ändra JourneyDirection till ändhållplats
+# - Ändra så funktioner läser SiteId ifrån key istället för sub-key:value
 
 try:
     # For Python 3.0 and later
@@ -12,8 +11,9 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 import json
+import os
 from datetime import datetime
-from time import mktime, time
+from time import mktime, time, sleep
 
 try:
     import yaml
@@ -38,7 +38,7 @@ class Station(object):
 
     def print_departures(self):
         print
-        print color.DARKCYAN + color.BOLD + self.station_name + color.END
+        print color.DARKCYAN + color.BOLD + self.site_name + color.END
 
         i = 0
 
@@ -72,8 +72,7 @@ class Station(object):
             i += 1
 
     def __init__(self):
-        self.station_id = None
-        self.station_name = None
+        self.site_name = None
         # Walking distance as time in minutes, default 5
         self.distance = 5
         self.traffic_type = None
@@ -99,9 +98,9 @@ class color:
 
 # Fetch the data from Trafiklab API and check for
 # common errors.
-def get_api_json_data(api_key, station_id):
+def get_api_json_data(api_key, site_id):
     url = "http://api.sl.se/api2/realtimedepartures.json?key=" + \
-            str(api_key) + "&siteid=" + str(station_id) + "&timewindow=60"
+            str(api_key) + "&siteid=" + str(site_id) + "&timewindow=60"
     stream = urlopen(url)
     data = json.load(stream)
     if data['StatusCode'] != 0:
@@ -158,20 +157,22 @@ def main():
 
     for k, v in read_config(CONFIG_FILE).iteritems():
         stations[k] = Station()
-        stations[k].station_id = v['station_id']
-        stations[k].station_name = v['station_name']
+        stations[k].site_name = v['site_name']
         stations[k].distance = v['distance']
         stations[k].lines = v['lines']
         stations[k].traffic_type = v['traffic_type']
 
     print_header()
 
-    # Loop through all stations and:
-    # (1) fetch data from API
-    # (2) print relevant departures
-    for s, o in stations.iteritems():
-        o.api_data = get_api_json_data(API_KEY, o.station_id)
-        o.print_departures()
+    while True:
+        os.system('clear')
+        # Loop through all stations and:
+        # (1) fetch data from API
+        # (2) print relevant departures
+        for s, o in stations.iteritems():
+            o.api_data = get_api_json_data(API_KEY, s)
+            o.print_departures()
+        sleep(60)
 
 if __name__ == '__main__':
     main()
