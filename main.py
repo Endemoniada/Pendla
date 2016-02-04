@@ -11,8 +11,9 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 import json
+import os
 from datetime import datetime
-from time import mktime, time
+from time import mktime, time, sleep
 
 try:
     import yaml
@@ -163,12 +164,15 @@ def main():
 
     print_header()
 
-    # Loop through all stations and:
-    # (1) fetch data from API
-    # (2) print relevant departures
-    for s, o in stations.iteritems():
-        o.api_data = get_api_json_data(API_KEY, s)
-        o.print_departures()
+    while True:
+        os.system('clear')
+        # Loop through all stations and:
+        # (1) fetch data from API
+        # (2) print relevant departures
+        for s, o in stations.iteritems():
+            o.api_data = get_api_json_data(API_KEY, s)
+            o.print_departures()
+        sleep(60)
 
 if __name__ == '__main__':
     main()
