@@ -13,7 +13,11 @@ programmet.
 
 ## Versioner
 
-### 1.0
+#### 1.0.1
+
+- Fixar en bugg där rubrikerna saknas i output
+
+### 1.0.0
 
 Full release av Pendla. Se instruktionerna för hur du skapar din konfiguration.
 
