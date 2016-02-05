@@ -6,7 +6,7 @@ try:
     from urllib.request import urlopen
 except ImportError:
     # Fall back to Python 2's urllib2
-    from urllib2 import urlopen
+    from urllib2 import urlopen, URLError, HTTPError
 import json
 import os
 from datetime import datetime
@@ -166,9 +166,18 @@ def main():
         # (1) fetch data from API
         # (2) print relevant departures
         for s, o in stations.iteritems():
-            o.api_data = get_api_json_data(API_KEY, s)
-            o.print_departures()
+            try:
+                o.api_data = get_api_json_data(API_KEY, s)
+            except HTTPError, e:
+                print "HTTP error: " + e.code
+            except URLError:
+                print "Network error: " + e.args
+            else:
+                o.print_departures()
         sleep(60)
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print " Exiting..."
