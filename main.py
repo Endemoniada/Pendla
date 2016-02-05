@@ -97,13 +97,16 @@ class color:
 # common errors.
 def get_api_json_data(api_key, site_id):
     url = "http://api.sl.se/api2/realtimedepartures.json?key=" + \
-            str(api_key) + "&siteid=" + str(site_id) + "&timewindow=60"
+            api_key + "&siteid=" + str(site_id) + "&timewindow=60"
     stream = urlopen(url)
     data = json.load(stream)
     if data['StatusCode'] != 0:
-        print "StatusCode: %s\nMessage: %s" % (
-            data['StatusCode'], data['Message']
-        )
+        if data['StatusCode'] == 1002:
+            print "API key is invalid or wrong."
+        else:
+            print "StatusCode: %s\nMessage: %s" % (
+                data['StatusCode'], data['Message']
+            )
         exit()
     return data
 
@@ -169,9 +172,9 @@ def main():
             try:
                 o.api_data = get_api_json_data(API_KEY, s)
             except HTTPError, e:
-                print "HTTP error: " + e.code
+                print "HTTP error: " + str(e.code)
             except URLError:
-                print "Network error: " + e.args
+                print "Network error"
             else:
                 o.print_departures()
         sleep(60)
