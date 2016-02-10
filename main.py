@@ -43,10 +43,11 @@ class Station(object):
     def get_string_time(self, unix):
         return datetime.strftime(datetime.strptime(unix, "%Y-%m-%dT%H:%M:%S"), "%H:%M")
 
-    def print_departures(self):
+    def print_site(self):
         print
         print color.DARKCYAN + color.BOLD + self.site_name + color.END
 
+    def print_departures(self):
         i = 0
 
         for d in self.api_data['ResponseData'][self.traffic_type]:
@@ -185,6 +186,7 @@ def main():
         # (1) fetch data from API
         # (2) print relevant departures
         for s, o in stations.iteritems():
+            o.print_site()
             try:
                 o.api_data = get_api_json_data(API_KEY, s)
             except HTTPError, e:
