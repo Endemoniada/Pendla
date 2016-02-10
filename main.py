@@ -19,6 +19,16 @@ except ImportError:
     exit()
 
 
+class APIError(Exception):
+
+    def __init__(self, code, message):
+        self.code = code
+        self.message = message
+
+    def __str__(self):
+        return repr({self.code: self.message})
+
+
 class Station(object):
     """docstring for Station
 
@@ -101,13 +111,19 @@ def get_api_json_data(api_key, site_id):
     stream = urlopen(url)
     data = json.load(stream)
     if data['StatusCode'] != 0:
-        if data['StatusCode'] == 1002:
-            print "API key is invalid or wrong."
-        else:
+        try:
+            raise APIError(data['StatusCode'], data['Message'])
+        except APIError as e:
             print "StatusCode: %s\nMessage: %s" % (
-                data['StatusCode'], data['Message']
+                e.code, e.message
             )
-        exit()
+        # if data['StatusCode'] == 1002:
+        #     print "API key is invalid or wrong."
+        # else:
+        #     print "StatusCode: %s\nMessage: %s" % (
+        #         data['StatusCode'], data['Message']
+        #     )
+        # exit()
     return data
 
 
@@ -175,6 +191,10 @@ def main():
                 print "HTTP error: " + str(e.code)
             except URLError:
                 print "Network error"
+            except APIError as e:
+                print "StatusCode: %s\nMessage: %s" % (
+                    e.code, e.message
+                )
             else:
                 o.print_departures()
         sleep(60)
