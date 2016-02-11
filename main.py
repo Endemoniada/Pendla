@@ -1,6 +1,19 @@
 #!/usr/bin/python
 # coding=utf-8
 
+"""Pendla v1.1.0 - Hjälper dig hinna hem!
+
+Usage:
+    pendla.py [-l | --loop]
+    pendla.py -h | --help | -V | --version
+
+Options:
+    -h --help               Show this screen.
+    -V --version            Show version.
+    -l --loop               Loop program once every minute.
+
+"""
+
 try:
     # For Python 3.0 and later
     from urllib.request import urlopen
@@ -10,6 +23,7 @@ except ImportError:
 import json
 import os
 from datetime import datetime
+from docopt import docopt
 from time import mktime, time, sleep
 
 try:
@@ -166,9 +180,11 @@ def read_config(config_file):
         raise
 
 
-def main():
+def main(args):
     API_KEY = "72e87e92af514d73830ba8cf89b8197d"
     CONFIG_FILE = "config.yml"
+    loop = args['--loop']
+    looptime = 60
 
     stations = {}
 
@@ -199,10 +215,17 @@ def main():
                 )
             else:
                 o.print_departures()
-        sleep(60)
+        if loop:
+            sleep(looptime)
+        else:
+            break
 
 if __name__ == '__main__':
     try:
-        main()
+        arguments = docopt(__doc__, version='Pendla v1.1.0')
+        # print(arguments)
+        # exit()
+        main(arguments)
+        exit()
     except KeyboardInterrupt:
         print " Exiting..."
