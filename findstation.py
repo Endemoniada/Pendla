@@ -1,10 +1,5 @@
+#!/usr/bin/python
 # coding=utf-8
-
-# TO-DO
-#
-# - Take input for search
-# - Format search URL and fetch results
-# - Parse results and allow user to choose one
 
 try:
     # For Python 3.0 and later
