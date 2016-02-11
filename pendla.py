@@ -23,7 +23,7 @@ except ImportError:
 import json
 import os
 from datetime import datetime
-from docopt import docopt
+from lib.docopt import docopt
 from time import mktime, time, sleep
 
 try:
