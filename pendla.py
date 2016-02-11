@@ -1,6 +1,19 @@
 #!/usr/bin/python
 # coding=utf-8
 
+"""Pendla v1.1.0 - Hjälper dig hinna hem!
+
+Usage:
+    pendla.py [-l | --loop]
+    pendla.py -h | --help | -V | --version
+
+Options:
+    -h --help               Show this screen.
+    -V --version            Show version.
+    -l --loop               Loop program once every minute.
+
+"""
+
 try:
     # For Python 3.0 and later
     from urllib.request import urlopen
@@ -10,6 +23,7 @@ except ImportError:
 import json
 import os
 from datetime import datetime
+from lib.docopt import docopt
 from time import mktime, time, sleep
 
 try:
@@ -17,6 +31,16 @@ try:
 except ImportError:
     print "Requires PyYAML module to function"
     exit()
+
+
+class APIError(Exception):
+
+    def __init__(self, code, message):
+        self.code = code
+        self.message = message
+
+    def __str__(self):
+        return repr({self.code: self.message})
 
 
 class Station(object):
@@ -33,10 +57,11 @@ class Station(object):
     def get_string_time(self, unix):
         return datetime.strftime(datetime.strptime(unix, "%Y-%m-%dT%H:%M:%S"), "%H:%M")
 
-    def print_departures(self):
+    def print_site(self):
         print
         print color.DARKCYAN + color.BOLD + self.site_name + color.END
 
+    def print_departures(self):
         i = 0
 
         for d in self.api_data['ResponseData'][self.traffic_type]:
@@ -101,13 +126,19 @@ def get_api_json_data(api_key, site_id):
     stream = urlopen(url)
     data = json.load(stream)
     if data['StatusCode'] != 0:
-        if data['StatusCode'] == 1002:
-            print "API key is invalid or wrong."
-        else:
+        try:
+            raise APIError(data['StatusCode'], data['Message'])
+        except APIError as e:
             print "StatusCode: %s\nMessage: %s" % (
-                data['StatusCode'], data['Message']
+                e.code, e.message
             )
-        exit()
+        # if data['StatusCode'] == 1002:
+        #     print "API key is invalid or wrong."
+        # else:
+        #     print "StatusCode: %s\nMessage: %s" % (
+        #         data['StatusCode'], data['Message']
+        #     )
+        # exit()
     return data
 
 
@@ -149,9 +180,11 @@ def read_config(config_file):
         raise
 
 
-def main():
+def main(args):
     API_KEY = "72e87e92af514d73830ba8cf89b8197d"
     CONFIG_FILE = "config.yml"
+    loop = args['--loop']
+    looptime = 60
 
     stations = {}
 
@@ -169,18 +202,28 @@ def main():
         # (1) fetch data from API
         # (2) print relevant departures
         for s, o in stations.iteritems():
+            o.print_site()
             try:
                 o.api_data = get_api_json_data(API_KEY, s)
             except HTTPError, e:
                 print "HTTP error: " + str(e.code)
             except URLError:
                 print "Network error"
+            except APIError as e:
+                print "StatusCode: %s\nMessage: %s" % (
+                    e.code, e.message
+                )
             else:
                 o.print_departures()
-        sleep(60)
+        if loop:
+            sleep(looptime)
+        else:
+            break
 
 if __name__ == '__main__':
     try:
-        main()
+        arguments = docopt(__doc__, version='Pendla v1.1.0')
+        main(arguments)
+        exit()
     except KeyboardInterrupt:
         print " Exiting..."

@@ -5,13 +5,22 @@ En liten applikation som visar kommande avgångar du faktiskt hinner till!
 
 ## Instruktioner
 
-Kör 'python findstation.py' för att hitta din station, och kopiera ID-numret.
+Kör './findstations.py' för att hitta din station, och kopiera ID-numret.
 Skapa din egen konfigurations-fil från config.yml.sample och skriv in
-dina stationer och önskade linjer där. Kör sedan 'python main.py' för att
-uppdatera sökningen automatiskt varje minut. Tryck Ctrl+C för att avbryta
-programmet.
+dina stationer och önskade linjer där. Kör sedan './pendla.py' för att visa
+resultaten, eller 'pendla.py -l' för att uppdatera sökningen automatiskt
+varje minut. Tryck Ctrl+C för att avbryta programmet.
 
 ## Versioner
+
+### 1.1.0
+
+- Byter namn på huvudprogrammet till pendla.py
+- Gör pendla.py exekverbar som standard
+- Lägger till argument och instruktioner för korrekt användning.
+- Ändrar standard-beteende till att visa resultaten och avsluta.
+  Lägg till '-l' eller '--loop' för att uppdatera automatiskt.
+- Bättre hantering av fel i både program och API.
 
 #### 1.0.1
 
