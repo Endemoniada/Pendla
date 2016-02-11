@@ -223,8 +223,6 @@ def main(args):
 if __name__ == '__main__':
     try:
         arguments = docopt(__doc__, version='Pendla v1.1.0')
-        # print(arguments)
-        # exit()
         main(arguments)
         exit()
     except KeyboardInterrupt:
