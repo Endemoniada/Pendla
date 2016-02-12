@@ -1,6 +1,6 @@
 # EXEMPEL PÅ KONFIGURATION
 #
-# Börja varje sektion med ID-numret för stationen. Kör 'python findstation.py'
+# Börja varje sektion med ID-numret för stationen. Kör './findstation.py'
 # för att hitta en stations ID-nummer.
 #
 # Fyll sedan på sektionen med namn på stationen, hur lång tid det tar att gå
@@ -11,11 +11,5 @@
     site_name: "Centralstationen"       # Namn inom ""
     distance: 16                        # gångavstånd i minuter
     lines:
-        12: "Norrtälje"                 # linje: "Ändhållplats"
+        12: "Norrtälje"                 # linjenummer: "Ändhållplats"
         34: "Södertälje"
-    traffic_type: "Trains"              # Tillåtna värden är:
-                                        #   "Metros"
-                                        #   "Buses"
-                                        #   "Trains"
-                                        #   "Trams"
-                                        #   "Ships"

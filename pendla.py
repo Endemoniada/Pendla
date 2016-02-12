@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # coding=utf-8
 
-"""Pendla v1.1.0 - Hjälper dig hinna hem!
+"""Pendla v1.2.0 - Hjälper dig hinna hem!
 
 Usage:
+    pendla.py
+    pendla.py <station name> <lines>...
     pendla.py [-l | --loop]
     pendla.py -h | --help | -V | --version
 
@@ -63,37 +65,55 @@ class Station(object):
 
     def print_departures(self):
         i = 0
+        u = 0
 
-        for d in self.api_data['ResponseData'][self.traffic_type]:
-            if int(d['LineNumber']) in self.lines and self.lines[int(d['LineNumber'])] == d['Destination']:
-                pass
-            else:
-                continue
-            now = int(time())
-            tt_unix = self.get_unix_time(d['TimeTabledDateTime'])
-            ex_unix = self.get_unix_time(d['ExpectedDateTime'])
-            tt_string = self.get_string_time(d['TimeTabledDateTime'])
-            ex_string = self.get_string_time(d['ExpectedDateTime'])
+        for t in self.traffic_types:
+            for d in self.api_data['ResponseData'][t]:
+                now = int(time())
+                try:
+                    tt_unix = self.get_unix_time(d['TimeTabledDateTime'])
+                    ex_unix = self.get_unix_time(d['ExpectedDateTime'])
+                    tt_string = self.get_string_time(d['TimeTabledDateTime'])
+                    ex_string = self.get_string_time(d['ExpectedDateTime'])
+                except:
+                    pass
+                if self.quick:
+                    if d['LineNumber'] in self.lines:
+                        u += 1
+                    else:
+                        continue
 
-            if i > 1:
-                break
+                    if i > 9:
+                        break
+                else:
+                    if int(d['LineNumber']) in self.lines and self.lines[int(d['LineNumber'])] == d['Destination']:
+                        u += 1
+                    else:
+                        continue
 
-            if (tt_unix - now) < self.distance * 60:
-                continue
+                    if i > 1:
+                        break
 
-            print color.END + remaining_time(self.distance, ex_unix),
-            print color.YELLOW + '%-7s' % d['DisplayTime'] + color.END,
-            if tt_unix == ex_unix:
-                print '%-11s' % tt_string,
-            else:
-                print '%-11s' % (tt_string+"/"+color.RED+ex_string+color.END),
-            print '%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END
-            if d['Deviations']:
-                print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
+                    if (tt_unix - now) < self.distance * 60:
+                        continue
 
-            i += 1
+                    print color.END + remaining_time(self.distance, ex_unix),
+                print color.YELLOW + '%-7s' % d['DisplayTime'] + color.END,
+                if tt_unix == ex_unix:
+                    print '%-11s' % tt_string,
+                else:
+                    print '%-11s' % (tt_string+"/"+color.RED+ex_string+color.END),
+                print '%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END
+                if d['Deviations']:
+                    print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
 
-    def __init__(self):
+                i += 1
+        if u == 0:
+            print "Inga avgångar matchade din sökning."
+
+    def __init__(self, quick=False):
+        self.traffic_types = ["Metros", "Buses", "Trains", "Trams", "Ships"]
+        self.quick = quick
         self.site_name = None
         # Walking distance as time in minutes, default 5
         self.distance = 5
@@ -132,20 +152,14 @@ def get_api_json_data(api_key, site_id):
             print "StatusCode: %s\nMessage: %s" % (
                 e.code, e.message
             )
-        # if data['StatusCode'] == 1002:
-        #     print "API key is invalid or wrong."
-        # else:
-        #     print "StatusCode: %s\nMessage: %s" % (
-        #         data['StatusCode'], data['Message']
-        #     )
-        # exit()
     return data
 
 
-def print_header():
+def print_header(quick=False):
         """Print a pretty header before outputing stations and departures"""
-        print color.GREEN+color.BOLD+'%-8s' % "Gå om",
-        print '%-8s' % "Avgång",
+        if not quick:
+            print color.GREEN + color.BOLD + '%-8s' % "Gå om",
+        print color.GREEN + color.BOLD + '%-8s' % "Avgång",
         print '%-11s' % "Tid",
         print "Destination",
         print color.END
@@ -183,21 +197,37 @@ def read_config(config_file):
 def main(args):
     API_KEY = "72e87e92af514d73830ba8cf89b8197d"
     CONFIG_FILE = "config.yml"
+
     loop = args['--loop']
     looptime = 60
+    quick = False
+
+    qstation = arguments['<station name>']
+    qslines = arguments['<lines>']
 
     stations = {}
 
-    for k, v in read_config(CONFIG_FILE).iteritems():
-        stations[k] = Station()
-        stations[k].site_name = v['site_name']
-        stations[k].distance = v['distance']
-        stations[k].lines = v['lines']
-        stations[k].traffic_type = v['traffic_type']
+    if qstation:
+        quick = True
+        import findstation
+        os.system('clear')
+        result = findstation.main(None, qstation)
+        for k, v in result.iteritems():
+            stations[k] = Station(True)
+            stations[k].site_name = v
+            stations[k].lines = qslines
+            break
+        loop = False
+    else:
+        for k, v in read_config(CONFIG_FILE).iteritems():
+            stations[k] = Station()
+            stations[k].site_name = v['site_name']
+            stations[k].distance = v['distance']
+            stations[k].lines = v['lines']
 
     while True:
         os.system('clear')
-        print_header()
+        print_header(quick)
         # Loop through all stations and:
         # (1) fetch data from API
         # (2) print relevant departures
@@ -222,7 +252,7 @@ def main(args):
 
 if __name__ == '__main__':
     try:
-        arguments = docopt(__doc__, version='Pendla v1.1.0')
+        arguments = docopt(__doc__, version='Pendla v1.2.0')
         main(arguments)
         exit()
     except KeyboardInterrupt:
