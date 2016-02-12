@@ -66,36 +66,55 @@ class Station(object):
     def print_departures(self):
         i = 0
 
-        for d in self.api_data['ResponseData'][self.traffic_type]:
-            if int(d['LineNumber']) in self.lines and self.lines[int(d['LineNumber'])] == d['Destination']:
-                pass
-            else:
-                continue
-            now = int(time())
-            tt_unix = self.get_unix_time(d['TimeTabledDateTime'])
-            ex_unix = self.get_unix_time(d['ExpectedDateTime'])
-            tt_string = self.get_string_time(d['TimeTabledDateTime'])
-            ex_string = self.get_string_time(d['ExpectedDateTime'])
+        # if self.quick:
+        #     for x in self.api_data['ResponseData'].iterkeys():
+        #         if x
+        # else:
+        for t in self.traffic_types:
+            for d in self.api_data['ResponseData'][t]:
+                now = int(time())
+                try:
+                    tt_unix = self.get_unix_time(d['TimeTabledDateTime'])
+                    ex_unix = self.get_unix_time(d['ExpectedDateTime'])
+                    tt_string = self.get_string_time(d['TimeTabledDateTime'])
+                    ex_string = self.get_string_time(d['ExpectedDateTime'])
+                except:
+                    pass
+                if self.quick:
+                    if d['LineNumber'] in self.lines:
+                        pass
+                    else:
+                        continue
 
-            if i > 1:
-                break
+                    if i > 5:
+                        break
+                else:
+                    if int(d['LineNumber']) in self.lines and self.lines[int(d['LineNumber'])] == d['Destination']:
+                        pass
+                    else:
+                        continue
 
-            if (tt_unix - now) < self.distance * 60:
-                continue
+                    if i > 1:
+                        break
 
-            print color.END + remaining_time(self.distance, ex_unix),
-            print color.YELLOW + '%-7s' % d['DisplayTime'] + color.END,
-            if tt_unix == ex_unix:
-                print '%-11s' % tt_string,
-            else:
-                print '%-11s' % (tt_string+"/"+color.RED+ex_string+color.END),
-            print '%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END
-            if d['Deviations']:
-                print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
+                    if (tt_unix - now) < self.distance * 60:
+                        continue
 
-            i += 1
+                    print color.END + remaining_time(self.distance, ex_unix),
+                print color.YELLOW + '%-7s' % d['DisplayTime'] + color.END,
+                if tt_unix == ex_unix:
+                    print '%-11s' % tt_string,
+                else:
+                    print '%-11s' % (tt_string+"/"+color.RED+ex_string+color.END),
+                print '%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END
+                if d['Deviations']:
+                    print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
 
-    def __init__(self):
+                i += 1
+
+    def __init__(self, quick=False):
+        self.traffic_types = ["Metros", "Buses", "Trains", "Trams", "Ships"]
+        self.quick = quick
         self.site_name = None
         # Walking distance as time in minutes, default 5
         self.distance = 5
@@ -144,9 +163,11 @@ def get_api_json_data(api_key, site_id):
     return data
 
 
-def print_header():
+def print_header(quick=False):
         """Print a pretty header before outputing stations and departures"""
-        print color.GREEN+color.BOLD+'%-8s' % "Gå om",
+        print color.GREEN+color.BOLD,
+        if not quick:
+            print '%-8s' % "Gå om",
         print '%-8s' % "Avgång",
         print '%-11s' % "Tid",
         print "Destination",
@@ -188,6 +209,7 @@ def main(args):
 
     loop = args['--loop']
     looptime = 60
+    quick = False
 
     qstation = arguments['<station name>']
     qslines = arguments['<lines>']
@@ -195,10 +217,17 @@ def main(args):
     stations = {}
 
     if qstation:
+        quick = True
         import findstation
         os.system('clear')
-        findstation.main(None, qstation)
-        exit()
+        result = findstation.main(None, qstation)
+        for k, v in result.iteritems():
+            stations[k] = Station(True)
+            stations[k].site_name = v
+            stations[k].lines = qslines
+            break
+        loop = False
+        # exit()
         # print "Show info for station '" + qstation + "' with lines " + str(qslines)
         # exit()
     else:
@@ -211,7 +240,7 @@ def main(args):
 
     while True:
         os.system('clear')
-        print_header()
+        print_header(quick)
         # Loop through all stations and:
         # (1) fetch data from API
         # (2) print relevant departures
