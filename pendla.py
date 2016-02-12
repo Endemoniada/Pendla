@@ -66,10 +66,6 @@ class Station(object):
     def print_departures(self):
         i = 0
 
-        # if self.quick:
-        #     for x in self.api_data['ResponseData'].iterkeys():
-        #         if x
-        # else:
         for t in self.traffic_types:
             for d in self.api_data['ResponseData'][t]:
                 now = int(time())
@@ -153,13 +149,6 @@ def get_api_json_data(api_key, site_id):
             print "StatusCode: %s\nMessage: %s" % (
                 e.code, e.message
             )
-        # if data['StatusCode'] == 1002:
-        #     print "API key is invalid or wrong."
-        # else:
-        #     print "StatusCode: %s\nMessage: %s" % (
-        #         data['StatusCode'], data['Message']
-        #     )
-        # exit()
     return data
 
 
@@ -227,16 +216,12 @@ def main(args):
             stations[k].lines = qslines
             break
         loop = False
-        # exit()
-        # print "Show info for station '" + qstation + "' with lines " + str(qslines)
-        # exit()
     else:
         for k, v in read_config(CONFIG_FILE).iteritems():
             stations[k] = Station()
             stations[k].site_name = v['site_name']
             stations[k].distance = v['distance']
             stations[k].lines = v['lines']
-            stations[k].traffic_type = v['traffic_type']
 
     while True:
         os.system('clear')
@@ -266,8 +251,6 @@ def main(args):
 if __name__ == '__main__':
     try:
         arguments = docopt(__doc__, version='Pendla v1.1.0')
-        # print(arguments)
-        # exit()
         main(arguments)
         exit()
     except KeyboardInterrupt:
