@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
 
-"""Pendla FindStation v1.1.0 - Hjälper dig hitta stationen att hinna hem ifrån!
+"""Pendla FindStation v1.2.0 - Hjälper dig hitta stationen att hinna hem ifrån!
 
 Usage:
     findstation.py
@@ -59,7 +59,9 @@ def print_search_results(results, choice=False):
     i = 1
     for r in results:
         choices[i] = {r['SiteId']: r['Name']}
-        if choice: print '%-4s' % ("#" + str(i)),; i += 1
+        if choice:
+            print '%-4s' % ("#" + str(i)),
+            i += 1
         print color.DARKCYAN + r['SiteId'] + color.YELLOW + " " + r['Name'],
         print color.END
 
@@ -109,7 +111,7 @@ def main(arguments=None, search_string=None):
         return choice
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='Pendla v1.1.0')
+    arguments = docopt(__doc__, version='Pendla v1.2.0')
     try:
         main(arguments)
     except KeyboardInterrupt:
