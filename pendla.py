@@ -65,6 +65,7 @@ class Station(object):
 
     def print_departures(self):
         i = 0
+        u = 0
 
         for t in self.traffic_types:
             for d in self.api_data['ResponseData'][t]:
@@ -78,7 +79,7 @@ class Station(object):
                     pass
                 if self.quick:
                     if d['LineNumber'] in self.lines:
-                        pass
+                        u += 1
                     else:
                         continue
 
@@ -86,7 +87,7 @@ class Station(object):
                         break
                 else:
                     if int(d['LineNumber']) in self.lines and self.lines[int(d['LineNumber'])] == d['Destination']:
-                        pass
+                        u += 1
                     else:
                         continue
 
@@ -107,6 +108,8 @@ class Station(object):
                     print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
 
                 i += 1
+        if u == 0:
+            print "Inga avgångar matchade din sökning."
 
     def __init__(self, quick=False):
         self.traffic_types = ["Metros", "Buses", "Trains", "Trams", "Ships"]
