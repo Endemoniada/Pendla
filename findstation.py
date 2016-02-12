@@ -21,6 +21,7 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen, quote
 import json
+import os
 from lib.docopt import docopt
 
 
@@ -65,7 +66,12 @@ def print_search_results(results, choice=False):
     if choice:
         print
         choice = raw_input("Välj hållplats: ")
-        return choices[int(choice)]
+        if int(choice) in choices:
+            return choices[int(choice)]
+        else:
+            os.system('clear')
+            print "Var vänlig ange ett giltigt nummer.\n"
+            return print_search_results(results, True)
     return False
 
 

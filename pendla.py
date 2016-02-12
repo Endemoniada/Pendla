@@ -82,7 +82,7 @@ class Station(object):
                     else:
                         continue
 
-                    if i > 5:
+                    if i > 9:
                         break
                 else:
                     if int(d['LineNumber']) in self.lines and self.lines[int(d['LineNumber'])] == d['Destination']:
@@ -154,10 +154,9 @@ def get_api_json_data(api_key, site_id):
 
 def print_header(quick=False):
         """Print a pretty header before outputing stations and departures"""
-        print color.GREEN+color.BOLD,
         if not quick:
-            print '%-8s' % "Gå om",
-        print '%-8s' % "Avgång",
+            print color.GREEN + color.BOLD + '%-8s' % "Gå om",
+        print color.GREEN + color.BOLD + '%-8s' % "Avgång",
         print '%-11s' % "Tid",
         print "Destination",
         print color.END
