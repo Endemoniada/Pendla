@@ -4,6 +4,8 @@
 """Pendla v1.1.0 - Hjälper dig hinna hem!
 
 Usage:
+    pendla.py
+    pendla.py <station name> <lines>...
     pendla.py [-l | --loop]
     pendla.py -h | --help | -V | --version
 
@@ -183,17 +185,29 @@ def read_config(config_file):
 def main(args):
     API_KEY = "72e87e92af514d73830ba8cf89b8197d"
     CONFIG_FILE = "config.yml"
+
     loop = args['--loop']
     looptime = 60
 
+    qstation = arguments['<station name>']
+    qslines = arguments['<lines>']
+
     stations = {}
 
-    for k, v in read_config(CONFIG_FILE).iteritems():
-        stations[k] = Station()
-        stations[k].site_name = v['site_name']
-        stations[k].distance = v['distance']
-        stations[k].lines = v['lines']
-        stations[k].traffic_type = v['traffic_type']
+    if qstation:
+        import findstation
+        os.system('clear')
+        findstation.main(None, qstation)
+        exit()
+        # print "Show info for station '" + qstation + "' with lines " + str(qslines)
+        # exit()
+    else:
+        for k, v in read_config(CONFIG_FILE).iteritems():
+            stations[k] = Station()
+            stations[k].site_name = v['site_name']
+            stations[k].distance = v['distance']
+            stations[k].lines = v['lines']
+            stations[k].traffic_type = v['traffic_type']
 
     while True:
         os.system('clear')
@@ -223,6 +237,8 @@ def main(args):
 if __name__ == '__main__':
     try:
         arguments = docopt(__doc__, version='Pendla v1.1.0')
+        # print(arguments)
+        # exit()
         main(arguments)
         exit()
     except KeyboardInterrupt:
