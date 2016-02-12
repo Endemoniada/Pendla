@@ -47,14 +47,17 @@ def get_search_string():
 
 def print_search_results(results, choice=False):
     """Print a pretty header before outputing search results"""
-    print color.GREEN + color.BOLD + '%9s' % "ID  ",
+    if choice:
+        print color.GREEN + color.BOLD + '%9s' % "ID  ",
+    else:
+        print color.GREEN + color.BOLD + '%-4s' % "ID  ",
     print "Namn" + color.END
 
     choices = {}
 
     i = 1
     for r in results:
-        choices[i] = r['SiteId']
+        choices[i] = {r['SiteId']: r['Name']}
         if choice: print '%-4s' % ("#" + str(i)),; i += 1
         print color.DARKCYAN + r['SiteId'] + color.YELLOW + " " + r['Name'],
         print color.END
@@ -63,6 +66,7 @@ def print_search_results(results, choice=False):
         print
         choice = raw_input("Välj hållplats: ")
         return choices[int(choice)]
+    return False
 
 
 def main(arguments=None, search_string=None):
@@ -93,7 +97,10 @@ def main(arguments=None, search_string=None):
             data['StatusCode'], data['Message']
         )
     else:
-        print_search_results(data['ResponseData'], choice)
+        choice = print_search_results(data['ResponseData'], choice)
+
+    if choice:
+        return choice
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Pendla v1.1.0')
