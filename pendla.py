@@ -5,7 +5,7 @@
 
 Usage:
     pendla.py
-    pendla.py <station name> <lines>...
+    pendla.py <station name> <lines>... [-l | --loop]
     pendla.py [-l | --loop]
     pendla.py -h | --help | -V | --version
 
@@ -217,7 +217,6 @@ def main(args):
             stations[k].site_name = v
             stations[k].lines = qslines
             break
-        loop = False
     else:
         for k, v in read_config(CONFIG_FILE).iteritems():
             stations[k] = Station()
@@ -253,6 +252,8 @@ def main(args):
 if __name__ == '__main__':
     try:
         arguments = docopt(__doc__, version='Pendla v1.2.0')
+        # print(arguments)
+        # exit()
         main(arguments)
         exit()
     except KeyboardInterrupt:
