@@ -77,7 +77,7 @@ class Station(object):
                     ex_string = self.get_string_time(d['ExpectedDateTime'])
                 except:
                     pass
-                if self.quick:
+                if self.quicksearch:
                     if d['LineNumber'] in self.lines:
                         u += 1
                     else:
@@ -111,9 +111,9 @@ class Station(object):
         if u == 0:
             print "Inga avgångar matchade din sökning."
 
-    def __init__(self, quick=False):
+    def __init__(self, quicksearch=False):
         self.traffic_types = ["Metros", "Buses", "Trains", "Trams", "Ships"]
-        self.quick = quick
+        self.quicksearch = quicksearch
         self.site_name = None
         # Walking distance as time in minutes, default 5
         self.distance = 5
@@ -155,9 +155,9 @@ def get_api_json_data(site_id):
     return data
 
 
-def print_header(quick=False):
+def print_header(quicksearch=False):
     """Print a pretty header before outputing stations and departures"""
-    if not quick:
+    if not quicksearch:
         print color.GREEN + color.BOLD + '%-8s' % "Gå om",
     print color.GREEN + color.BOLD + '%-8s' % "Avgång",
     print '%-11s' % "Tid",
@@ -200,22 +200,22 @@ def main(args):
 
     loop = args['--loop']
     looptime = 60
-    quick = False
+    quicksearch = False
 
-    qstation = arguments['<station name>']
-    qslines = arguments['<lines>']
+    qs_name = arguments['<station name>']
+    qs_lines = arguments['<lines>']
 
     stations = {}
 
-    if qstation:
-        quick = True
+    if qs_name:
+        quicksearch = True
         import findstation
         os.system('clear')
-        result = findstation.main(None, qstation)
+        result = findstation.main(None, qs_name)
         for k, v in result.iteritems():
             stations[k] = Station(True)
             stations[k].site_name = v
-            stations[k].lines = qslines
+            stations[k].lines = qs_lines
             break
     else:
         for k, v in config.iteritems():
@@ -226,7 +226,7 @@ def main(args):
 
     while True:
         os.system('clear')
-        print_header(quick)
+        print_header(quicksearch)
         # Loop through all stations and:
         # (1) fetch data from API
         # (2) print relevant departures
