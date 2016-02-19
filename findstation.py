@@ -78,7 +78,6 @@ def print_search_results(results, choice=False):
 
 
 def main(arguments=None, search_string=None):
-    API_KEY = "e24b05ad190347b3aa55284738027712"
     choice = False
 
     # api.sl.se/api2/typeahead.json?key=e24b05ad190347b3aa55284738027712&searchstring=Helenelund&stationsonly=True&maxresults=10
@@ -93,7 +92,7 @@ def main(arguments=None, search_string=None):
     stations_only = "True"
     max_results = "10"
 
-    url = "http://api.sl.se/api2/typeahead.json?key=" + API_KEY + \
+    url = "http://endemoniada.org/trafiklab.php?api=typeahead" + \
         "&searchstring=" + quote(search_string) + \
         "&stationsonly=" + stations_only + \
         "&maxresults=" + max_results

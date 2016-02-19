@@ -2,3 +2,6 @@
 __pycache__/
 *.py[cod]
 config.yml
+
+# API key proxy
+trafiklab.php
