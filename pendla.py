@@ -196,6 +196,7 @@ def read_config(config_file):
 
 def main(args):
     CONFIG_FILE = "config.yml"
+    config = read_config(CONFIG_FILE)
 
     loop = args['--loop']
     looptime = 60
@@ -217,7 +218,7 @@ def main(args):
             stations[k].lines = qslines
             break
     else:
-        for k, v in read_config(CONFIG_FILE).iteritems():
+        for k, v in config.iteritems():
             stations[k] = Station()
             stations[k].site_name = v['site_name']
             stations[k].distance = v['distance']
