@@ -156,13 +156,13 @@ def get_api_json_data(site_id):
 
 
 def print_header(quick=False):
-        """Print a pretty header before outputing stations and departures"""
-        if not quick:
-            print color.GREEN + color.BOLD + '%-8s' % "Gå om",
-        print color.GREEN + color.BOLD + '%-8s' % "Avgång",
-        print '%-11s' % "Tid",
-        print "Destination",
-        print color.END
+    """Print a pretty header before outputing stations and departures"""
+    if not quick:
+        print color.GREEN + color.BOLD + '%-8s' % "Gå om",
+    print color.GREEN + color.BOLD + '%-8s' % "Avgång",
+    print '%-11s' % "Tid",
+    print "Destination",
+    print color.END
 
 
 def remaining_time(distance, departure):
