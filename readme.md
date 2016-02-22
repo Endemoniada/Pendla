@@ -1,4 +1,4 @@
-Pendla v1.2.0
+Pendla v1.3.0
 ======
 
 En liten applikation som visar kommande avgångar du faktiskt hinner till!
@@ -18,6 +18,11 @@ Du kan även söka stationers ID-nummer snabbt genom att köra:
 ./findstation.py <namn på stationen>
 
 ## Versioner
+
+### 1.3.0
+
+- Gör det möjligt att loopa även vid snabbsökningar
+- API-proxy som döljer API-nyckeln
 
 ### v1.2.0
 
