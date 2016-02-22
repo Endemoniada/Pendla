@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # coding=utf-8
 
-"""Pendla v1.2.0 - Hjälper dig hinna hem!
+"""Pendla v1.3.0 - Hjälper dig hinna hem!
 
 Usage:
     pendla.py
-    pendla.py <station name> <lines>...
+    pendla.py <station name> <lines>... [-l | --loop]
     pendla.py [-l | --loop]
     pendla.py -h | --help | -V | --version
 
@@ -140,9 +140,9 @@ class color:
 
 # Fetch the data from Trafiklab API and check for
 # common errors.
-def get_api_json_data(api_key, site_id):
-    url = "http://api.sl.se/api2/realtimedepartures.json?key=" + \
-            api_key + "&siteid=" + str(site_id) + "&timewindow=60"
+def get_api_json_data(site_id):
+    url = "http://endemoniada.org/trafiklab.php?api=realtimedepartures" + \
+          "&siteid=" + str(site_id) + "&timewindow=60"
     stream = urlopen(url)
     data = json.load(stream)
     if data['StatusCode'] != 0:
@@ -195,7 +195,6 @@ def read_config(config_file):
 
 
 def main(args):
-    API_KEY = "72e87e92af514d73830ba8cf89b8197d"
     CONFIG_FILE = "config.yml"
 
     loop = args['--loop']
@@ -217,7 +216,6 @@ def main(args):
             stations[k].site_name = v
             stations[k].lines = qslines
             break
-        loop = False
     else:
         for k, v in read_config(CONFIG_FILE).iteritems():
             stations[k] = Station()
@@ -234,7 +232,7 @@ def main(args):
         for s, o in stations.iteritems():
             o.print_site()
             try:
-                o.api_data = get_api_json_data(API_KEY, s)
+                o.api_data = get_api_json_data(s)
             except HTTPError, e:
                 print "HTTP error: " + str(e.code)
             except URLError:
@@ -252,7 +250,7 @@ def main(args):
 
 if __name__ == '__main__':
     try:
-        arguments = docopt(__doc__, version='Pendla v1.2.0')
+        arguments = docopt(__doc__, version='Pendla v1.3.0')
         main(arguments)
         exit()
     except KeyboardInterrupt:
