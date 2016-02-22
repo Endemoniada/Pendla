@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
 
-"""Pendla v1.2.0 - Hjälper dig hinna hem!
+"""Pendla v1.3.0 - Hjälper dig hinna hem!
 
 Usage:
     pendla.py
@@ -250,7 +250,7 @@ def main(args):
 
 if __name__ == '__main__':
     try:
-        arguments = docopt(__doc__, version='Pendla v1.2.0')
+        arguments = docopt(__doc__, version='Pendla v1.3.0')
         main(arguments)
         exit()
     except KeyboardInterrupt:

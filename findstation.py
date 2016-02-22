@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
 
-"""Pendla FindStation v1.2.0 - Hjälper dig hitta stationen att hinna hem ifrån!
+"""Pendla FindStation v1.3.0 - Hjälper dig hitta stationen att hinna hem ifrån!
 
 Usage:
     findstation.py
@@ -80,8 +80,6 @@ def print_search_results(results, choice=False):
 def main(arguments=None, search_string=None):
     choice = False
 
-    # api.sl.se/api2/typeahead.json?key=e24b05ad190347b3aa55284738027712&searchstring=Helenelund&stationsonly=True&maxresults=10
-
     if arguments and arguments['<station name>']:
         search_string = arguments['<station name>']
     else:
@@ -110,7 +108,7 @@ def main(arguments=None, search_string=None):
         return choice
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='Pendla v1.2.0')
+    arguments = docopt(__doc__, version='Pendla v1.3.0')
     try:
         main(arguments)
     except KeyboardInterrupt:
