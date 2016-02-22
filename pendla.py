@@ -194,6 +194,52 @@ def read_config(config_file):
         raise
 
 
+class Stations(object):
+    """docstring for Stations
+
+    Class describing a set of stations with functions to fetch and print
+    their data in a simple fashion.
+    """
+
+    def __init__(self, config, quicksearch=False):
+        self.stations = {}
+        self.config = config
+        self.quicksearch = quicksearch
+
+    def populate_stations(self):
+        for k, v in self.config.iteritems():
+            self.stations[k] = Station()
+            self.stations[k].site_name = v['site_name']
+            self.stations[k].distance = v['distance']
+            self.stations[k].lines = v['lines']
+
+    def get_stations(self):
+        while True:
+            os.system('clear')
+            print_header(quicksearch)
+            # Loop through all stations and:
+            # (1) fetch data from API
+            # (2) print relevant departures
+            for s, o in self.stations.iteritems():
+                o.print_site()
+                try:
+                    o.api_data = get_api_json_data(s)
+                except HTTPError, e:
+                    print "HTTP error: " + str(e.code)
+                except URLError:
+                    print "Network error"
+                except APIError as e:
+                    print "StatusCode: %s\nMessage: %s" % (
+                        e.code, e.message
+                    )
+                else:
+                    o.print_departures()
+            if loop:
+                sleep(looptime)
+            else:
+                break
+
+
 def main(args):
     CONFIG_FILE = "config.yml"
     config = read_config(CONFIG_FILE)
