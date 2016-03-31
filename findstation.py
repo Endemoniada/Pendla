@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding=utf-8
 
 """Pendla FindStation v1.3.0 - Hjälper dig hitta stationen att hinna hem ifrån!
