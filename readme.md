@@ -3,6 +3,11 @@ Pendla v1.3.0
 
 En liten applikation som visar kommande avgångar du faktiskt hinner till!
 
+## Installation
+
+Kör 'pip install -r requirements.txt' för att installera de extra moduler
+som krävs för att köra applikationen.
+
 ## Instruktioner
 
 Kör './findstation.py' för att hitta din station, och kopiera ID-numret.
@@ -18,6 +23,10 @@ Du kan även söka stationers ID-nummer snabbt genom att köra:
 ./findstation.py <namn på stationen>
 
 ## Versioner
+
+#### 1.3.1
+- Kör python från 'env' istället för /usr/bin/python specifikt.
+- Lägger till instruktioner för att installera stödmoduler
 
 ### 1.3.0
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding=utf-8
 
 """Pendla v1.3.0 - Hjälper dig hinna hem!
