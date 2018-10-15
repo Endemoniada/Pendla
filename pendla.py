@@ -21,7 +21,8 @@ try:
     from urllib.request import urlopen
 except ImportError:
     # Fall back to Python 2's urllib2
-    from urllib2 import urlopen, URLError, HTTPError
+    from urllib.request import urlopen
+    from urllib.error import URLError, HTTPError
 import json
 import os
 from datetime import datetime
@@ -31,7 +32,7 @@ from time import mktime, time, sleep
 try:
     import yaml
 except ImportError:
-    print "Requires PyYAML module to function"
+    print("Requires PyYAML module to function")
     exit()
 
 
@@ -60,8 +61,8 @@ class Station(object):
         return datetime.strftime(datetime.strptime(unix, "%Y-%m-%dT%H:%M:%S"), "%H:%M")
 
     def print_site(self):
-        print
-        print color.DARKCYAN + color.BOLD + self.site_name + color.END
+        print()
+        print(color.DARKCYAN + color.BOLD + self.site_name + color.END)
 
     def print_departures(self):
         i = 0
@@ -97,19 +98,19 @@ class Station(object):
                     if (tt_unix - now) < self.distance * 60:
                         continue
 
-                    print color.END + remaining_time(self.distance, ex_unix),
-                print color.YELLOW + '%-7s' % d['DisplayTime'] + color.END,
+                    print(color.END + remaining_time(self.distance, ex_unix), end=' ')
+                print(color.YELLOW + '%-7s' % d['DisplayTime'] + color.END, end=' ')
                 if tt_unix == ex_unix:
-                    print '%-11s' % tt_string,
+                    print('%-11s' % tt_string, end=' ')
                 else:
-                    print '%-11s' % (tt_string+"/"+color.RED+ex_string+color.END),
-                print '%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END
+                    print('%-11s' % (tt_string+"/"+color.RED+ex_string+color.END), end=' ')
+                print('%-11s' % (color.DARKCYAN + d['LineNumber'] + " " + color.YELLOW + d['Destination']) + color.END)
                 if d['Deviations']:
-                    print color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END
+                    print(color.DARKCYAN + "- " + d['Deviations'][0]['Text'][:80] + color.END)
 
                 i += 1
         if u == 0:
-            print "Inga avgångar matchade din sökning."
+            print("Inga avgångar matchade din sökning.")
 
     def __init__(self, quick=False):
         self.traffic_types = ["Metros", "Buses", "Trains", "Trams", "Ships"]
@@ -149,20 +150,20 @@ def get_api_json_data(site_id):
         try:
             raise APIError(data['StatusCode'], data['Message'])
         except APIError as e:
-            print "StatusCode: %s\nMessage: %s" % (
+            print("StatusCode: %s\nMessage: %s" % (
                 e.code, e.message
-            )
+            ))
     return data
 
 
 def print_header(quick=False):
         """Print a pretty header before outputing stations and departures"""
         if not quick:
-            print color.GREEN + color.BOLD + '%-8s' % "Gå om",
-        print color.GREEN + color.BOLD + '%-8s' % "Avgång",
-        print '%-11s' % "Tid",
-        print "Destination",
-        print color.END
+            print(color.GREEN + color.BOLD + '%-8s' % "Gå om", end=' ')
+        print(color.GREEN + color.BOLD + '%-8s' % "Avgång", end=' ')
+        print('%-11s' % "Tid", end=' ')
+        print("Destination", end=' ')
+        print(color.END)
 
 
 def remaining_time(distance, departure):
@@ -190,7 +191,7 @@ def read_config(config_file):
             config_data = yaml.load(stream)
             return config_data
     except IOError:
-        print "No configuration file found!"
+        print("No configuration file found!")
         raise
 
 
@@ -211,13 +212,13 @@ def main(args):
         import findstation
         os.system('clear')
         result = findstation.main(None, qstation)
-        for k, v in result.iteritems():
+        for k, v in result.items():
             stations[k] = Station(True)
             stations[k].site_name = v
             stations[k].lines = qslines
             break
     else:
-        for k, v in read_config(CONFIG_FILE).iteritems():
+        for k, v in read_config(CONFIG_FILE).items():
             stations[k] = Station()
             stations[k].site_name = v['site_name']
             stations[k].distance = v['distance']
@@ -229,18 +230,18 @@ def main(args):
         # Loop through all stations and:
         # (1) fetch data from API
         # (2) print relevant departures
-        for s, o in stations.iteritems():
+        for s, o in stations.items():
             o.print_site()
             try:
                 o.api_data = get_api_json_data(s)
-            except HTTPError, e:
-                print "HTTP error: " + str(e.code)
+            except HTTPError as e:
+                print("HTTP error: " + str(e.code))
             except URLError:
-                print "Network error"
+                print("Network error")
             except APIError as e:
-                print "StatusCode: %s\nMessage: %s" % (
+                print("StatusCode: %s\nMessage: %s" % (
                     e.code, e.message
-                )
+                ))
             else:
                 o.print_departures()
         if loop:
@@ -254,4 +255,4 @@ if __name__ == '__main__':
         main(arguments)
         exit()
     except KeyboardInterrupt:
-        print " Exiting..."
+        print(" Exiting...")

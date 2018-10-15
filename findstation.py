@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+from __future__ import print_function
 
 """Pendla FindStation v1.3.0 - Hjälper dig hitta stationen att hinna hem ifrån!
 
@@ -17,6 +18,7 @@ Options:
 try:
     # For Python 3.0 and later
     from urllib.request import urlopen
+    from urllib.parse import quote
 except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen, quote
@@ -41,18 +43,18 @@ class color:
 
 
 def get_search_string():
-    string = raw_input("Sök efter hållplats: ")
-    print
+    string = input("Sök efter hållplats: ")
+    print()
     return string
 
 
 def print_search_results(results, choice=False):
     """Print a pretty header before outputing search results"""
     if choice:
-        print color.GREEN + color.BOLD + '%9s' % "ID  ",
+        print(color.GREEN + color.BOLD + '%9s' % "ID  ", end=' ')
     else:
-        print color.GREEN + color.BOLD + '%-4s' % "ID  ",
-    print "Namn" + color.END
+        print(color.GREEN + color.BOLD + '%-4s' % "ID  ", end=' ')
+    print("Namn" + color.END)
 
     choices = {}
 
@@ -60,19 +62,19 @@ def print_search_results(results, choice=False):
     for r in results:
         choices[i] = {r['SiteId']: r['Name']}
         if choice:
-            print '%-4s' % ("#" + str(i)),
+            print('%-4s' % ("#" + str(i)), end=' ')
             i += 1
-        print color.DARKCYAN + r['SiteId'] + color.YELLOW + " " + r['Name'],
-        print color.END
+        print(color.DARKCYAN + r['SiteId'] + color.YELLOW + " " + r['Name'], end=' ')
+        print(color.END)
 
     if choice:
-        print
-        choice = raw_input("Välj hållplats: ")
+        print()
+        choice = input("Välj hållplats: ")
         if int(choice) in choices:
             return choices[int(choice)]
         else:
             os.system('clear')
-            print "Var vänlig ange ett giltigt nummer.\n"
+            print("Var vänlig ange ett giltigt nummer.\n")
             return print_search_results(results, True)
     return False
 
@@ -98,9 +100,9 @@ def main(arguments=None, search_string=None):
     data = json.load(stream)
 
     if data['StatusCode'] != 0:
-        print "StatusCode: %s\nMessage: %s" % (
+        print("StatusCode: %s\nMessage: %s" % (
             data['StatusCode'], data['Message']
-        )
+        ))
     else:
         choice = print_search_results(data['ResponseData'], choice)
 
@@ -112,5 +114,5 @@ if __name__ == '__main__':
     try:
         main(arguments)
     except KeyboardInterrupt:
-        print "\nExiting..."
+        print("\nExiting...")
     exit()
